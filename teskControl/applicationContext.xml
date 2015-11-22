@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+	<!-- YandeCGJob -->
+	<bean id="YandeCGSynchronousJob" class="com.pisual.witchatelier.job.SynchronousRemoteData" />
+	<!-- 定义调用对象和调用对象的方法 -->
+	<bean id="YandeCGSynchronousJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类 -->
+		<property name="targetObject" ref="YandeCGSynchronousJob" />
+		<!-- 调用类中的方法 -->
+		<property name="targetMethod" value="doJob" />
+		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+		<property name="concurrent" value="true" />
+	</bean>
+	<!-- quartz-2.x的配置 -->
+	<!-- 定义触发时间 -->
+	<bean id="YandeCGSynchronousJobTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="YandeCGSynchronousJobDetail" />
+		</property>
+		<property name="cronExpression">
+			<value>0 1 3 ? * *</value>
+		</property>
+	</bean>
+	<!-- YandeCGJob -->
+	
+	<!-- YandeCGJob -->
+	<bean id="YandeCGDownLoad100NumPicJob" class="com.pisual.witchatelier.job.DownLoad100NumPic" />
+	<!-- 定义调用对象和调用对象的方法 -->
+	<bean id="YandeCGDownLoad100NumPicJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类 -->
+		<property name="targetObject" ref="YandeCGDownLoad100NumPicJob" />
+		<!-- 调用类中的方法 -->
+		<property name="targetMethod" value="doJob" />
+		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+		<property name="concurrent" value="true" />
+	</bean>
+	<!-- quartz-2.x的配置 -->
+	<!-- 定义触发时间 -->
+	<bean id="YandeCGDownLoad100NumPicJobTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="YandeCGDownLoad100NumPicJobDetail" />
+		</property>
+		<property name="cronExpression">
+			<value>0 10 1 ? * *</value>
+		</property>
+	</bean>
+	<!-- YandeCGJob -->
+	
+		<!-- YandeCGJob -->
+	<bean id="YandeCGCellsStartJob" class="com.pisual.witchatelier.job.StartCells" />
+	<!-- 定义调用对象和调用对象的方法 -->
+	<bean id="YandeCGCellsStartJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类 -->
+		<property name="targetObject" ref="YandeCGCellsStartJob" />
+		<!-- 调用类中的方法 -->
+		<property name="targetMethod" value="doJob" />
+		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+		<property name="concurrent" value="true" />
+	</bean>
+	<!-- quartz-2.x的配置 -->
+	<!-- 定义触发时间 -->
+	<bean id="YandeCGCellsStratTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="YandeCGCellsStartJobDetail" />
+		</property>
+		<property name="cronExpression">
+			<value>0 5 1 ? * *</value>
+		</property>
+	</bean>
+	<!-- YandeCGJob -->
+	
+	
+			<!-- YandeCGJob -->
+	<bean id="YandeCGCellsStopJob" class="com.pisual.witchatelier.job.StopCells" />
+	<!-- 定义调用对象和调用对象的方法 -->
+	<bean id="YandeCGCellsStopJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类 -->
+		<property name="targetObject" ref="YandeCGCellsStopJob" />
+		<!-- 调用类中的方法 -->
+		<property name="targetMethod" value="doJob" />
+		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+		<property name="concurrent" value="true" />
+	</bean>
+	<!-- quartz-2.x的配置 -->
+	<!-- 定义触发时间 -->
+	<bean id="YandeCGCellsStopTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="YandeCGCellsStopJobDetail" />
+		</property>
+		<property name="cronExpression">
+			<value>0 2 5 ? * *</value>
+		</property>
+	</bean>
+	<!-- YandeCGJob -->
+    
+	<!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
+	<!-- 如果lazy-init='true',则需要实例化该bean才能执行调度程序 -->
+	<bean name="startYandeCGJobQuertz" lazy-init="false" autowire="no"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="YandeCGSynchronousJobTrigger" />
+				<ref bean="YandeCGDownLoad100NumPicJobTrigger" />
+			    <ref bean="YandeCGCellsStratTrigger" />
+			    <ref bean="YandeCGCellsStopTrigger" />
+			</list>
+		</property>
+		<property name="autoStartup" value="true" />
+	</bean>
+</beans>
